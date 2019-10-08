@@ -4,24 +4,32 @@ import android.app.ProgressDialog;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.FileProvider;
 
 import android.util.Log;
 import android.view.View;
 import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.widget.Toast;
+import java.io.File;
+import java.io.IOException;
 
 public class PlayHelpVideo extends AppCompatActivity {
     private VideoView myVideoView;
     private int position = 0;
     private ProgressDialog progressDialog;
     private MediaController mediaControls;
+    private static final int VIDEO_CAPTURE = 101;
+    private Uri fileUri;
+    String mCurrentPhotoPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +39,15 @@ public class PlayHelpVideo extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);
+
+        if(!hasCamera()){
+            fab.setEnabled(false);
+        }
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // go to record video here
+                startRecording();
             }
         });
 
@@ -97,6 +110,75 @@ public class PlayHelpVideo extends AppCompatActivity {
                 myVideoView.start();
             }
         });
+    }
+
+    public void startRecording()
+    {
+        //File mediaFile = new
+                //File(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)
+                //+ "/myvideo.mp4");
+        File mediaFile = null;
+        try {
+            mediaFile = createImageFile();
+        } catch (IOException ex) {
+            // Error occurred while creating the File
+            return;
+        }
+
+
+        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,5);
+        //fileUri = Uri.fromFile(mediaFile);
+        fileUri = FileProvider.getUriForFile(PlayHelpVideo.this,
+                BuildConfig.APPLICATION_ID + ".provider",
+                mediaFile);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+        startActivityForResult(intent, VIDEO_CAPTURE);
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String imageFileName = "myvideo";
+        File storageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DCIM), "Camera");
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".mp4",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
+    }
+
+
+
+    private boolean hasCamera() {
+        if (getPackageManager().hasSystemFeature(
+                PackageManager.FEATURE_CAMERA_ANY)){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    protected void onActivityResult(int requestCode,
+                                    int resultCode, Intent data) {
+
+        if (requestCode == VIDEO_CAPTURE) {
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "Video has been saved to:\n" +
+                        data.getData(), Toast.LENGTH_LONG).show();
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "Video recording cancelled.",
+                        Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(this, "Failed to record video",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
 }
