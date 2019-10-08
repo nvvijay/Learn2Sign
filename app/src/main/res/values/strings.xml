@@ -8,6 +8,7 @@
     <string name="record">Record</string>
     <string name="choose_action_to_learn">Choose Action To Learn</string>
     <string-array name="word_arrays">
+        <item>Choose Action Here</item>
         <item>gift</item>
         <item>car</item>
         <item>pay</item>
