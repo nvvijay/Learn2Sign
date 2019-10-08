@@ -37,6 +37,7 @@ public class PlayHelpVideo extends AppCompatActivity {
         setContentView(R.layout.activity_play_help_video);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        final String sign = getIntent().getStringExtra("sign");
 
         FloatingActionButton fab = findViewById(R.id.fab);
 
@@ -44,13 +45,13 @@ public class PlayHelpVideo extends AppCompatActivity {
             fab.setEnabled(false);
         }
         if (fab != null)
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startRecording();
-            }
-        });
-
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    startRecording(sign);
+                    Log.v("myTag","FAB Clicked");
+                }
+            });
 
         //set the media controller buttons
         if (mediaControls == null) {
@@ -74,7 +75,7 @@ public class PlayHelpVideo extends AppCompatActivity {
         try {
             //set the media controller in the VideoView
             myVideoView.setMediaController(mediaControls);
-            String sign = getIntent().getStringExtra("sign");
+            //String sign = getIntent().getStringExtra("sign");
             //set title
             TextView title = findViewById(R.id.demo_title_text);
             title.setText("This is a demonstration of the sign: "+sign);
@@ -112,16 +113,18 @@ public class PlayHelpVideo extends AppCompatActivity {
         });
     }
 
-    public void startRecording()
+    public void startRecording(String some)
     {
+
         File mediaFile = null;
         try {
-            mediaFile = createImageFile();
+            Log.v("myTag","FAB recording");
+            mediaFile = createImageFile(some);
+            Log.v("myTag","FAB recording");
         } catch (IOException ex) {
             return;
         }
-
-
+        Log.v("myTag","FAB here_prev");
         Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,5);
         fileUri = FileProvider.getUriForFile(PlayHelpVideo.this,
@@ -132,19 +135,23 @@ public class PlayHelpVideo extends AppCompatActivity {
         startActivityForResult(intent, VIDEO_CAPTURE);
     }
 
-    private File createImageFile() throws IOException {
+    private File createImageFile(String name) throws IOException {
         // Create an image file name
-        String imageFileName = "myvideo";
+        Log.v("myTag","FAB oncreateimage");
+        String imageFileName = name;
+        Log.v("myTag","FAB here1");
         File storageDir = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DCIM), "Camera");
+        Log.v("myTag","FAB here2");
         File image = File.createTempFile(
                 imageFileName,  /* prefix */
                 ".mp4",         /* suffix */
                 storageDir      /* directory */
         );
-
+        Log.v("myTag","FAB here3");
         // Save a file: path for use with ACTION_VIEW intents
         mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        Log.v("myTag","FAB here4");
         return image;
     }
 
