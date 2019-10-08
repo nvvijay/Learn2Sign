@@ -10,10 +10,14 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import java.util.HashMap;
+
 public class MainActivity extends AppCompatActivity {
     private boolean isSpinnerTouched = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.word_arrays, R.layout.word_spinner_item);

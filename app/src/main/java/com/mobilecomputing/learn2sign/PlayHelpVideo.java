@@ -14,6 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.VideoView;
 
 public class PlayHelpVideo extends AppCompatActivity {
@@ -37,6 +38,7 @@ public class PlayHelpVideo extends AppCompatActivity {
             }
         });
 
+
         //set the media controller buttons
         if (mediaControls == null) {
             mediaControls = new MediaController(PlayHelpVideo.this);
@@ -59,9 +61,12 @@ public class PlayHelpVideo extends AppCompatActivity {
         try {
             //set the media controller in the VideoView
             myVideoView.setMediaController(mediaControls);
-
+            String sign = getIntent().getStringExtra("sign");
+            //set title
+            TextView title = findViewById(R.id.demo_title_text);
+            title.setText("This is a demonstration of the sign: "+sign);
             //set the uri of the video to be played
-            myVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/raw/explain"));
+            myVideoView.setVideoURI(Uri.parse("android.resource://" + getPackageName() + "/raw/"+sign));
 
         } catch (Exception e) {
             Log.e("Error", e.getMessage());
