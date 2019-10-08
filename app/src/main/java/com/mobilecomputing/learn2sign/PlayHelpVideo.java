@@ -43,11 +43,12 @@ public class PlayHelpVideo extends AppCompatActivity {
         if(!hasCamera()){
             fab.setEnabled(false);
         }
-
+        if (fab != null)
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startRecording();
+                Log.v("myTag","FAB Clicked");
             }
         });
 
@@ -117,11 +118,12 @@ public class PlayHelpVideo extends AppCompatActivity {
         //File mediaFile = new
                 //File(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)
                 //+ "/myvideo.mp4");
+        Log.v("myTag","FAB recording");
         File mediaFile = null;
         try {
             mediaFile = createImageFile();
         } catch (IOException ex) {
-            // Error occurred while creating the File
+            Log.v("myTag","Exception");
             return;
         }
 
@@ -149,6 +151,7 @@ public class PlayHelpVideo extends AppCompatActivity {
         );
 
         // Save a file: path for use with ACTION_VIEW intents
+        Log.v("myTag","FAB create image");
         mCurrentPhotoPath = "file:" + image.getAbsolutePath();
         return image;
     }
