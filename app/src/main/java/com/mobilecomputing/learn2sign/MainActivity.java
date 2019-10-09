@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
                 //And StartActivity here...
 
-                if(isSpinnerTouched && !str.equals("Choose Action Here")){
+                if(isSpinnerTouched && !str.equals("Select Here")){
                     Intent intent = new Intent(MainActivity.this,PlayHelpVideo.class);
                     intent.putExtra("sign", str);
                     startActivity(intent);
